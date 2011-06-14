@@ -9,14 +9,31 @@ class KactoosAPI{
 	private $apikey;
 	private $appname;
 	private $format;
+	protected static $available_formats = array('xml','json');
 	
 	public function __construct(){
 	}
 	
+	/**
+	* Development Stuff. Just print the current object formated
+	*
+	* @return void
+	*/
 	public function debug(){
 		echo '<pre>';
 		print_r($this);
 		echo '</pre>';
+	}
+	
+	/**
+    * Verify format type support
+    *
+    * @param string $format
+    * @return Boolean
+    */
+	static function isValidFormat($format){
+		return ($format !== null || $format!== "")
+        ? (in_array($format, self::$available_formats) ? true : false) : false;
 	}
 	
 	/**
@@ -34,32 +51,69 @@ class KactoosAPI{
 	}
 	
 	/**
+	* Just build a valid and complete URL to consume Kactoos API 
+	*
+	* @param string $method
+	* @param array $params
+	* @return string
+	*/
+	protected function buildURL($method,$params){
+		$optionsURL = '';
+		if(sizeof($params) > 0){
+			$optionsURL = $this->parseParams($params);
+		}
+		return self::$baseurl.'/'.$this->country.'/api/'.$this->module.'/'.$method.'/format/'.$this->format.'/appname/'.$this->appname.'/apikey/'.$this->apikey.$optionsURL;
+	}
+	
+	/**
+	* Verify if exists some error in document XML or JSON
+	*
+	* @param string $method
+	* @param object $doc
+	* @return string
+	*/
+	public function validateDoc($doc){	
+		
+	}
+	
+	/**
 	* Make a request to Kactoos API. Methos is the name of available method. 
 	* Params is an array with options
 	*
 	* @param string $method
 	* @param array $params
+	* @$format string [XML/JSON]
 	* @return SimpleXmlElement
 	*/
 	public function request($method,$params){
-		$optionsURL = '';
-		if(sizeof($params) > 0){
-			$optionsURL = $this->parseParams($params);
+		if(self::isValidFormat($this->format)){
+			$url = $this->buildURL($method,$params);
+			$ch = curl_init($url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_HEADER, 0);
+			$data = curl_exec($ch);
+			if($data){
+				
+				if($this->format == 'xml'){
+					$doc = new SimpleXmlElement($data);
+				}else{
+					$doc = json_decode($data);
+				}
+				return $doc;	
+			}else{
+				throw new Exception(curl_error($ch));
+			}
+		}else{
+			throw new Exception('Must provide a valid format to request [XML or JSON]');
 		}
-		$url = self::$baseurl.'/'.$this->country.'/api/'.$this->module.'/'.$method.'/format/'.$this->format.'/appname/'.$this->appname.'/apikey/'.$this->apikey.$optionsURL;
-		echo $url;
-		$ch = curl_init($url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		$data = curl_exec($ch);
-		$doc = new SimpleXmlElement($data);
 		curl_close($ch);
-		return $doc;
 	}
 	
 	public function country($country){
 		if($country!=null){
 			$this->country = $country;
+		}else{
+			throw new Exception('Must provide a valid coutry [br,co,mx,en]');
 		}
 		return $this;
 	}
@@ -67,6 +121,8 @@ class KactoosAPI{
 	public function module($module){
 		if($module!=null){
 			$this->module = $module;
+		}else{
+			throw new Exception('Must provide a valid module [products]');
 		}
 		return $this;
 	}
@@ -74,6 +130,8 @@ class KactoosAPI{
 	public function apikey($apikey){
 		if($apikey!=null){
 			$this->apikey = $apikey;
+		}else{
+			throw new Exception('Must provide a valid APIKEY [api.kactoos.com]');
 		}
 		return $this;
 	}
@@ -81,6 +139,8 @@ class KactoosAPI{
 	public function appname($appname){
 		if($appname!=null){
 			$this->appname = $appname;
+		}else{
+			throw new Exception('Must provide a valid AppName [api.kactoos.com]');
 		}
 		return $this;
 	}
@@ -107,23 +167,40 @@ class KactoosAPI{
 		if($search != null){
 			$params['search']=$search;
 		}
-		require_once('product-categories.php');
+
+		// @todo - Im tired now... and i know that i need optimize this method, but for now, it works ;) 
 		$response = $this->request('get-product-categories',$params);
 		$product_categories = array();
-		$size = sizeof($response);
-		if($size > 0){
-			for($i=0;$i<$size;$i++){
-				$productCategory = new ProductCategories();
-				$productCategory->id((string)$response->category[$i]->id_categoria)
-							    ->idSubCategory((string)$response->category[$i]->id_categoria_sub)
-							    ->nameMaster((string)$response->category[$i]->nombre_padre)
-							    ->nameSubcategory((string)$response->category[$i]->nombre_categoria_sub)
-							    ->idCountry((string)$response->category[$i]->id_pais)
-							    ->productNumber((string)$response->category[$i]->num_prod);
-				$product_categories[] = $productCategory;
+		if($this->format == 'xml'){
+			$size = sizeof($response);
+			if($size > 0){
+				for($i=0;$i<$size;$i++){
+					$productCategory = new ProductCategories();
+					$productCategory->id((string)$response->category[$i]->id_categoria)
+									->idSubCategory((string)$response->category[$i]->id_categoria_sub)
+									->nameMaster((string)$response->category[$i]->nombre_padre)
+									->nameSubcategory((string)$response->category[$i]->nombre_categoria_sub)
+									->idCountry((string)$response->category[$i]->id_pais)
+									->productNumber((string)$response->category[$i]->num_prod);
+					$product_categories[] = $productCategory;
+				}
 			}
-			return $product_categories;
+		}else{
+			$size = sizeof($response->arrCategorias);
+			if($size > 0){
+				for($i=0;$i<$size;$i++){
+					$productCategory = new ProductCategories();
+					$productCategory->id((string)$response->arrCategorias[$i]->id_categoria)
+									->idSubCategory((string)$response->arrCategorias[$i]->id_categoria_sub)
+									->nameMaster((string)$response->arrCategorias[$i]->nombre_padre)
+									->nameSubcategory((string)$response->arrCategorias[$i]->nombre_categoria_sub)
+									->idCountry((string)$response->arrCategorias[$i]->id_pais)
+									->productNumber((string)$response->arrCategorias[$i]->num_prod);
+					$product_categories[] = $productCategory;
+				}
+			}
 		}
+		return $product_categories;
 	}
 	
 	public function getProductsByRange(){
