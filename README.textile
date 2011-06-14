@@ -1,0 +1,57 @@
+h1. Kactoos API
+
+http://jaydson.org
+Mantainer: Jaydson Gomes <jayalemao@gmail.com>
+
+Kactoos API is a simple PHP classes abstracion to consume Kactoos API.
+The Kactoos public API provide simple methods to get information about the products and stuff.
+This information is delivered as XML or JSON format.
+This abstraction consists in encapsulate this methods to help developers created fun applications with PHP.
+You just need to include kactoos-api.php in your project, and start to use available methods.
+* This is beta and under construction,so... use with your own risk ;)
+
+This project is open sourced under the MIT license
+and can be used and modified by anyone. 
+
+The requirements are:
+* PHP 5+
+* PHPUnit (Just if you want to run tests)
+* cURL (http://www.php.net/manual/en/curl.requirements.php)
+
+h2. Third Party code used:
+* none for a while
+
+h2. Up & Running in a few steps
+
+* To use Kactoos you just need to include kactoos-api in your App and config a little things:
+$kapi = new KactoosAPI();
+$kapi->apikey('your_app_key')
+     ->country('br')
+     ->module('products')
+     ->appname('your_app_name')
+     ->format('xml')
+     ->debug();
+     
+Obviously, you need to get an Kactoos api, but is simple: http://api.kactoos.com
+Assuming that you created with success your Kactoos API, its easy start to use. Just look at sample code above ;)
+
+* Example
+How can i get information about kactoos products categories ?
+$categories = $kapi->getProductCategories('categorie-name','droid');
+Wow!
+Pretty easy hum?
+In this example, we searching in Kactoos plataform an Category that the name is like 'droid'... Well, i want to get some cellphone with Android ;)
+
+[ Soon as possible i'll create more and more examples ]
+
+h2. How can you help?
+* Creating fun applications with Kactoos API
+* Testing and sending Tickets!
+* Resolving existing tickets!
+* Spreading the world about the project!
+
+h2. How can I get Help?
+* First the "project's wiki":http://wiki.github.com/jaydson/Kactoos-API
+* http://api.kactoos.com
+* You can send a message to anyone involved into the project (throught GitHub)
+* My Blog Post http://jaydson.org/kactoos-api
