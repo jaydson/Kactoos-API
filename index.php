@@ -8,7 +8,9 @@ $kapi = new KactoosAPI();
 $kapi->apikey('8f14e45fceea167a5a36dedd4bea2543')
      ->country('br')
      ->module('products')
-     ->appname('cosa')
-     ->format('json')
+     ->appname('jaydson')
+     ->format('xml')
      ->debug();
-	 $kapi->getProductCategories('categorie-name','beleza');
+     
+$categories = $kapi->getProductCategories('categorie-name','beleza');
+print_r($categories);
