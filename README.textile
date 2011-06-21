@@ -6,7 +6,7 @@ Mantainer: Jaydson Gomes <jayalemao@gmail.com>
 Kactoos API is a simple PHP classes abstracion to consume Kactoos API.
 The Kactoos public API provide simple methods to get information about the products and stuff.
 This information is delivered as XML or JSON format.
-This abstraction consists in encapsulate this methods to help developers created fun applications with PHP.
+This abstraction consists in encapsulate this methods to help developers to create fun applications with PHP.
 You just need to include kactoos-api.php in your project, and start to use available methods.
 * This is beta and under construction,so... use with your own risk ;)
 
