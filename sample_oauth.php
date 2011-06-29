@@ -8,8 +8,8 @@ echo '<pre>';
 $kapi = new KactoosAPI();
 $kapi->callbackUrl('http://tests.local/kactoos/api/sample_oauth.php')
      ->requestMethod('GET')
-     ->consumerKey('acfa436d35a5ea89e6d2e4654ee0e94f04df8f181')
-     ->consumerSecret('de9672074e2c2586376a2e9166743170')
+     ->consumerKey('')
+     ->consumerSecret('')
      ->format('xml');
 $kapi->auth();
 

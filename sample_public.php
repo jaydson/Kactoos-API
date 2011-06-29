@@ -5,7 +5,7 @@ function __autoload($class_name) {
 }
 
 $kapi = new KactoosAPI();
-$kapi->oauthConsumerKey('acfa436d35a5ea89e6d2e4654ee0e94f04df8f181')
+$kapi->oauthConsumerKey('')
      ->country('br')
      ->module('products')
      ->format('xml');

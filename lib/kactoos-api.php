@@ -2,11 +2,11 @@
 
 class KactoosAPI{
 	
-    protected static $baseurl = 'http://heriberto.kactoos.me';
-    protected static $siteUrl = 'http://heriberto.kactoos.me/api/oauth/request_token';
-    protected static $requestTokenUrl = 'http://heriberto.kactoos.me/api/oauth/request_token';
-    protected static $accessTokenUrl = 'http://heriberto.kactoos.me/api/oauth/access_token';
-    protected static $userAuthorizationUrl = 'http://heriberto.kactoos.me/api/oauth/authorize';
+    protected static $baseurl = 'http://api.kactoos.com';
+    protected static $siteUrl = 'http://api.kactoos.com/api/oauth/request_token';
+    protected static $requestTokenUrl = 'http://api.kactoos.com/api/oauth/request_token';
+    protected static $accessTokenUrl = 'http://api.kactoos.com/api/oauth/access_token';
+    protected static $userAuthorizationUrl = 'http://api.kactoos.com/api/oauth/authorize';
     private $country;
     private $module;
     private $apikey;
@@ -78,7 +78,7 @@ class KactoosAPI{
     * Params is an array with options
     *
     * @param string $method
-    * @param array $params 
+    * @param array $params
     * @return SimpleXmlElement/StdClass
     */
     public function request($method,$params){
@@ -210,29 +210,29 @@ class KactoosAPI{
     */
     public function parseProduct($xml_product){
         $product = new Product();
-        $product->productId((string)$xml_product->api_id_producto)
-                ->productCountryId((string)$xml_product->api_id_producto_pais)
-                ->countryId((string)$xml_product->api_id_pais)
-                ->name(((string)$xml_product->api_nombre_producto))
-                ->msrpPrice((string)$xml_product->api_precio_msrp)
-                ->shippingCost((string)$xml_product->api_shipping_cost)
-                ->time((string)$xml_product->api_horas_estimadas)
-                ->active((string)$xml_product->api_activo)
-                ->highlight((string)$xml_product->api_destacado)
-                ->warranty((string)$xml_product->api_garantia)
-                ->introduction((string)$xml_product->api_intro)
-                ->views((string)$xml_product->api_numero_vistas)
-                ->stock((string)$xml_product->api_stock)
-                ->date((string)$xml_product->api_fecha_ingreso)
-                ->description((string)$xml_product->api_default_descripcion)
-                ->image((string)$xml_product->api_imagen)
-                ->groupId((string)$xml_product->api_id_grupo)
-                ->groupBeginDate((string)$xml_product->api_fecha_inicio)
-                ->groupEndDate((string)$xml_product->api_fecha_final)
-                ->beginPrice((string)$xml_product->api_precio_inicial)
-                ->actualPrice((string)$xml_product->api_precio_actual)
-                ->shortUrl((string)$xml_product->api_short_url)
-                ->price((string)$xml_product->api_precio);
+        $product->productId((string)$xml_product->id_product)
+                ->productCountryId((string)$xml_product->id_product_country)
+                ->countryId((string)$xml_product->id_country)
+                ->name((utf8_decode((string)$xml_product->product_name)))
+                ->msrpPrice((string)$xml_product->msrp_price)
+                ->shippingCost((string)$xml_product->shipping_cost)
+                ->time((string)$xml_product->estimated_time)
+                ->active((string)$xml_product->active)
+                ->highlight((string)$xml_product->highlight)
+                ->warranty((string)$xml_product->warranty)
+                ->introduction(utf8_decode((string)$xml_product->intro))
+                ->views((string)$xml_product->views)
+                ->stock((string)$xml_product->stock)
+                ->date((string)$xml_product->date_created)
+                ->description(utf8_decode((string)$xml_product->default_description))
+                ->image((string)$xml_product->image)
+                ->groupId((string)$xml_product->id_group)
+                ->groupBeginDate((string)$xml_product->date_start)
+                ->groupEndDate((string)$xml_product->date_end)
+                ->beginPrice((string)$xml_product->initial_price)
+                ->actualPrice((string)$xml_product->actual_price)
+                ->shortUrl((string)$xml_product->short_url)
+                ->price((string)$xml_product->price);
         return $product;
     }
 
@@ -258,14 +258,14 @@ class KactoosAPI{
         if($this->format == 'xml'){
                 $size = sizeof($response);
                 if($size > 0){
-                        for($i=0;$i<$size;$i++){
+                        for($i=0;$i<$size;$i++){                           
                                 $productCategory = new ProductCategories();
-                                $productCategory->id((string)$response->category[$i]->id_categoria)
-                                                ->idSubCategory((string)$response->category[$i]->id_categoria_sub)
-                                                ->nameMaster(utf8_decode((string)$response->category[$i]->nombre_padre))
-                                                ->nameSubcategory(utf8_decode((string)$response->category[$i]->nombre_categoria_sub))
-                                                ->idCountry((string)$response->category[$i]->id_pais)
-                                                ->productNumber((string)$response->category[$i]->num_prod);
+                                $productCategory->id((string)$response->category[$i]->id_category)
+                                                ->idSubCategory((string)$response->category[$i]->sub_category_id)
+                                                ->nameMaster(utf8_decode((string)$response->category[$i]->parent_category_name))
+                                                ->nameSubcategory(utf8_decode((string)$response->category[$i]->sub_category_name))
+                                                ->idCountry((string)$response->category[$i]->id_country)
+                                                ->productNumber((string)$response->category[$i]->product_number);
                                 $product_categories[] = $productCategory;
                         }
                 }
@@ -274,12 +274,12 @@ class KactoosAPI{
                 if($size > 0){
                         for($i=0;$i<$size;$i++){
                                 $productCategory = new ProductCategories();
-                                $productCategory->id((string)$response->arrCategorias[$i]->id_categoria)
-                                                ->idSubCategory((string)$response->arrCategorias[$i]->id_categoria_sub)
-                                                ->nameMaster(utf8_decode((string)$response->arrCategorias[$i]->nombre_padre))
-                                                ->nameSubcategory(utf8_decode((string)$response->arrCategorias[$i]->nombre_categoria_sub))
-                                                ->idCountry((string)$response->arrCategorias[$i]->id_pais)
-                                                ->productNumber((string)$response->arrCategorias[$i]->num_prod);
+                                $productCategory->id((string)$response->arrCategorias[$i]->id_category)
+                                                ->idSubCategory((string)$response->arrCategorias[$i]->sub_category_id)
+                                                ->nameMaster(utf8_decode((string)$response->arrCategorias[$i]->parent_category_name))
+                                                ->nameSubcategory(utf8_decode((string)$response->arrCategorias[$i]->sub_category_name))
+                                                ->idCountry((string)$response->arrCategorias[$i]->id_country)
+                                                ->productNumber((string)$response->arrCategorias[$i]->product_number);
                                 $product_categories[] = $productCategory;
                         }
                 }
@@ -309,37 +309,6 @@ class KactoosAPI{
                     if($size > 0){
                         for($i=0;$i<$size;$i++){
                             $products[] = $this->parseProduct($response->product[$i]);
-                        }
-                    }
-            }else{
-                    $size = sizeof($response->products);                    
-                    if($size > 0){
-                        for($i=0;$i<$size;$i++){
-                            $product = new Product();
-                            $product->productId((string)$response->products[$i]->id_producto)
-                                    ->productCountryId((string)$response->products[$i]->id_producto_pais)
-                                    ->countryId((string)$response->products[$i]->id_pais)
-                                    ->name(utf8_decode((string)$response->products[$i]->nombre_producto))
-                                    ->msrpPrice((string)$response->products[$i]->precio_msrp)
-                                    ->shippingCost((string)$response->products[$i]->shipping_cost)
-                                    ->time((string)$response->products[$i]->horas_estimadas)
-                                    ->active((string)$response->products[$i]->activo)
-                                    ->highlight((string)$response->products[$i]->destacado)
-                                    ->warranty(utf8_decode((string)$response->products[$i]->garantia))
-                                    ->introduction(utf8_decode((string)$response->products[$i]->intro))
-                                    ->views((string)$response->products[$i]->numero_vistas)
-                                    ->stock((string)$response->products[$i]->stock)
-                                    ->date((string)$response->products[$i]->fecha_ingreso)
-                                    ->description(utf8_decode((string)$response->products[$i]->default_descripcion))
-                                    ->image((string)$response->products[$i]->imagen)
-                                    ->groupId((string)$response->products[$i]->id_grupo)
-                                    ->groupBeginDate((string)$response->products[$i]->fecha_inicio)
-                                    ->groupEndDate((string)$response->products[$i]->fecha_final)
-                                    ->beginPrice((string)$response->products[$i]->precio_inicial)
-                                    ->actualPrice((string)$response->products[$i]->precio_actual)
-                                    ->shortUrl((string)$response->products[$i]->short_url)
-                                    ->price((string)$response->products[$i]->precio);
-                            $products[] = $product;
                         }
                     }
             }
