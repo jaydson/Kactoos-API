@@ -2,12 +2,12 @@
 	
 class ProductCategories{
 
-    private $id;
-    private $id_sub;
-    private $name_master;
-    private $name_sub;
-    private $country_id;
-    private $product_number;
+    public $id;
+    public $id_sub;
+    public $name_master;
+    public $name_sub;
+    public $country_id;
+    public $product_number;
 
     public function id($id = null){
         if($id != null){

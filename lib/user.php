@@ -2,13 +2,13 @@
 
 class User{
     
-    private $date;
-    private $name;
-    private $last_name;
-    private $sex;
-    private $username;
-    private $country_acronym;
-    private $avatar;
+    public $date;
+    public $name;
+    public $last_name;
+    public $sex;
+    public $username;
+    public $country_acronym;
+    public $avatar;
 
     public function date($value = null){
         if($value != null){

@@ -2,30 +2,31 @@
 
 class Product{
 
-    private $product_id;
-    private $product_country_id;
-    private $country_id;
-    private $name;
-    private $msrp_price;
-    private $shipping_cost;
-    private $time;
-    private $active;
-    private $highlight;
-    private $warranty;
-    private $introduction;
-    private $views;
-    private $stock;
-    private $date;
-    private $description;
-    private $image;
-    private $group_id;
-    private $group_begin_date;
-    private $group_end_date;
-    private $begin_price;
-    private $actual_price;
-    private $total_users;
-    private $short_url;
-    private $price;
+    public $product_id;
+    public $product_country_id;
+    public $country_id;
+    public $name;
+    public $msrp_price;
+    public $shipping_cost;
+    public $time;
+    public $active;
+    public $highlight;
+    public $warranty;
+    public $introduction;
+    public $views;
+    public $stock;
+    public $date;
+    public $description;
+    public $image;
+    public $group_id;
+    public $group_begin_date;
+    public $group_end_date;
+    public $begin_price;
+    public $actual_price;
+    public $total_users;
+    public $url;
+    public $short_url;
+    public $price;
 
     public function productId($value = null){
         if($value != null){
@@ -177,6 +178,13 @@ class Product{
     public function totalUsers($value = null){
         if($value != null){
             $this->total_users = $value;
+        }
+        return $this;
+    }
+
+    public function url($value = null){
+        if($value != null){
+            $this->url = $value;
         }
         return $this;
     }

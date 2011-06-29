@@ -231,6 +231,7 @@ class KactoosAPI{
                 ->groupEndDate((string)$xml_product->date_end)
                 ->beginPrice((string)$xml_product->initial_price)
                 ->actualPrice((string)$xml_product->actual_price)
+                ->url((string)$xml_product->url)
                 ->shortUrl((string)$xml_product->short_url)
                 ->price((string)$xml_product->price);
         return $product;
